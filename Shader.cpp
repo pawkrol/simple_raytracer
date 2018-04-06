@@ -23,14 +23,15 @@ Vector Shader::shade(Vector hitPosition, Vector hitNormal, Scene scene, int sphe
 
     Ray shadowRay = Ray(hitPosition, toLight);
     double shadowFactor = 1;
-    double t1, t2;
-    for (int i = 0; i < scene.getSpheres().size(); i++) {
-        if (i != sphereIndex && scene.getSpheres()[i]->intersects(shadowRay, t1, t2)) {
-            if (t1 > 0) {
-                shadowFactor = 0.2;
-            }
-        }
-    }
+//    double t1, t2;
+//    for (int i = 0; i < scene.getSpheres().size(); i++) {
+//        if (i != sphereIndex && scene.getSpheres()[i]->intersects(shadowRay, t1, t2)) {
+//            if (t1 > 0) {
+//                shadowFactor = 0.2;
+//                break;
+//            }
+//        }
+//    }
 
     Vector finalColor = sphere->getColor() * ((diffuseColor * shadowFactor) + ambientColor);
     finalColor = finalColor + specularColor * shadowFactor;

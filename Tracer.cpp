@@ -1,4 +1,5 @@
 #include <cmath>
+#include <iostream>
 
 #include "Tracer.h"
 #include "physics/Ray.h"
@@ -29,14 +30,18 @@ Vector *Tracer::render(Screen screen, Scene scene, Shader shader) {
             d.normalize();
             Ray ray(scene.getCameraPosition(), d);
 
-            image[y * screen.width + x] = trace(scene, ray, shader);
+            image[y * screen.width + x] = trace(scene, ray, shader, 0);
         }
     }
 
     return image;
 }
 
-Vector Tracer::trace(Scene scene, Ray ray, Shader shader) {
+Vector reflect(Vector i, Vector n) {
+    return i - (n * i.dot(n) * 2);
+}
+
+Vector Tracer::trace(Scene scene, Ray ray, Shader shader, int depth) {
     int sphereIndex = -1;
 
     double tNearest = INFINITY;
@@ -61,5 +66,18 @@ Vector Tracer::trace(Scene scene, Ray ray, Shader shader) {
     Vector hitNormal = hitPosition - spheres[sphereIndex]->getCenter(); //for now just support Sphere
     hitNormal.normalize();
 
-    return shader.shade(hitPosition, hitNormal, scene, sphereIndex);
+    Vector finalColor(0);
+
+    if (depth < MAX_DEPTH) {
+        Vector reflectedDir = reflect(ray.getD(), hitNormal);
+        reflectedDir.normalize();
+
+        std::cout << reflectedDir.print() << std::endl;
+        std::cout << ray.getD().print() << std::endl;
+
+        Ray reflectedRay(hitPosition, reflectedDir);
+        finalColor = finalColor + trace(scene, reflectedRay, shader, depth + 1) * 0.2;
+    }
+
+    return finalColor + shader.shade(hitPosition, hitNormal, scene, sphereIndex);
 }

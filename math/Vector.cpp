@@ -4,6 +4,8 @@
 
 Vector::Vector(): x(0), y(0), z(0) {}
 
+Vector::Vector(double v): x(v), y(v), z(v) {}
+
 Vector::Vector(double x, double y): x(x), y(y), z(0) {}
 
 Vector::Vector(double x, double y, double z): x(x), y(y), z(z) {}
@@ -42,6 +44,11 @@ Vector Vector::cross(Vector v) {
     double tz = x * v.y - y * v.x;
 
     return Vector(tx, ty, tz);
+}
+
+Vector Vector::reflect(Vector n) {
+    Vector i(*this);
+    return i - n * (n.dot(i) * 2);
 }
 
 Vector Vector::operator-(Vector v) {

@@ -27,7 +27,13 @@ int main() {
     scene.addSphere(new Sphere(Vector(0.1, -0.1, -1.8), 0.45, Vector(1, 1, 1)));
     scene.addSphere(new Sphere(Vector(0.1, 0.2, -1), 0.2, Vector(0.55, 0.9, 0)));
 
+    std::cout << "Scene defined" << std::endl;
+    std::cout << "Rendering started" << std::endl;
+
     auto *image = Tracer().render(screen, scene, Shader());
+
+    std::cout << "Rendering ended" << std::endl;
+    std::cout << "Saving image" << std::endl;
 
     std::ofstream ofs("./image.ppm", std::ios::out | std::ios::binary);
     ofs << "P3\n" << width << " " << height << "\n255\n";
@@ -37,6 +43,8 @@ int main() {
             << floor(fmax(0, image[i].z) * 255) << " ";
     }
     ofs.close();
+
+    std::cout << "Image saved" << std::endl;
 
     delete[] image;
 

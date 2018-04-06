@@ -11,6 +11,7 @@ public:
     double z;
 
     Vector();
+    Vector(double v);
     Vector(double x, double y);
     Vector(double x, double y, double z);
 
@@ -21,6 +22,8 @@ public:
     void min(double min);
     double dot(Vector v);
     Vector cross(Vector v);
+
+    Vector reflect(Vector n);
 
     Vector operator-(Vector v);
     Vector operator+(Vector v);

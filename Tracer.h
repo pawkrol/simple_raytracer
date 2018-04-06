@@ -12,7 +12,9 @@ public:
     Vector* render(Screen screen, Scene scene, Shader shader);
 
 private:
-    Vector trace(Scene scene, Ray ray, Shader shader);
+    int MAX_DEPTH = 1;
+
+    Vector trace(Scene scene, Ray ray, Shader shader, int depth);
 
 };
 
