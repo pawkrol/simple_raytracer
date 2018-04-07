@@ -11,6 +11,7 @@ public:
     double z;
 
     Vector();
+    explicit Vector(double v);
     Vector(double x, double y);
     Vector(double x, double y, double z);
 
@@ -23,10 +24,15 @@ public:
     Vector cross(Vector v);
 
     Vector operator-(Vector v);
+    Vector operator-();
     Vector operator+(Vector v);
     Vector operator*(double v); //by scalar
     Vector operator*(Vector v); //by vector
 
+    void operator+=(Vector v);
+
+    static Vector normalize(Vector v);
+    static Vector reflect(Vector i, Vector n);
 };
 
 #endif //RIVAL_DEALER_VECTOR_H

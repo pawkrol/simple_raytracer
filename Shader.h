@@ -8,7 +8,7 @@
 class Shader {
 
 public:
-    Vector shade(Vector hitPosition, Vector hitNormal, Scene scene, int sphereIndex);
+    Vector shade(Vector hitPosition, Vector hitNormal, Scene scene, int primitiveIndex);
 
 };
 

@@ -1,20 +1,20 @@
 #ifndef RIVAL_DEALER_SPHERE_H
 #define RIVAL_DEALER_SPHERE_H
 
-#include "../math/Vector.h"
-#include "../physics/Ray.h"
+#include "Primitive.h"
 
-class Sphere {
+class Sphere : public Primitive{
 
 public:
     Sphere() = default;
     Sphere(Vector c, double r);
     Sphere(Vector c, double r, Vector color);
 
-    bool intersects(Ray r, double &t1, double &t2);
+    bool intersects(Ray r, double &t1, double &t2) override;
+    Vector getNormal(Vector p) override;
 
     Vector getCenter();
-    Vector getColor();
+    Vector getColor() override;
 
 private:
     Vector c;

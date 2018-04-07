@@ -2,7 +2,7 @@
 #define RIVAL_DEALER_SCENE_H
 
 #include <vector>
-#include "primitives/Sphere.h"
+#include "primitives/Primitive.h"
 #include "physics/Light.h"
 
 class Scene {
@@ -10,8 +10,8 @@ class Scene {
 public:
     Scene();
 
-    void addSphere(Sphere *p);
-    std::vector<Sphere*> getSpheres();
+    void addPrimitive(Primitive *p);
+    std::vector<Primitive *> getPrimitives();
 
     void addLight(Light l);
     Light getLight();
@@ -20,7 +20,7 @@ public:
     Vector getCameraPosition();
 
 private:
-    std::vector<Sphere*> spheres;
+    std::vector<Primitive*> primitives;
     Light light; // for now only one
     Vector cameraPosition;
 

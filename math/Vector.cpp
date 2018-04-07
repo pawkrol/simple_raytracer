@@ -4,6 +4,8 @@
 
 Vector::Vector(): x(0), y(0), z(0) {}
 
+Vector::Vector(double v): x(v), y(v), z(v) {}
+
 Vector::Vector(double x, double y): x(x), y(y), z(0) {}
 
 Vector::Vector(double x, double y, double z): x(x), y(y), z(z) {}
@@ -52,6 +54,14 @@ Vector Vector::operator-(Vector v) {
     return tmp;
 }
 
+Vector Vector::operator-() {
+    Vector tmp(*this);
+    tmp.x = -tmp.x;
+    tmp.y = -tmp.y;
+    tmp.z = -tmp.z;
+    return tmp;
+}
+
 Vector Vector::operator+(Vector v) {
     Vector tmp(*this);
     tmp.x += v.x;
@@ -74,4 +84,19 @@ Vector Vector::operator*(Vector v) {
     tmp.y *= v.y;
     tmp.z *= v.z;
     return tmp;
+}
+
+void Vector::operator+=(Vector v) {
+    x += v.x;
+    y += v.y;
+    z += v.z;
+}
+
+Vector Vector::normalize(Vector v) {
+    v.normalize();
+    return v;
+}
+
+Vector Vector::reflect(Vector i, Vector n) {
+    return i - (n * 2.0 * i.dot(n));
 }

@@ -2,12 +2,12 @@
 
 Scene::Scene() = default;
 
-void Scene::addSphere(Sphere *p) {
-    spheres.push_back(p);
+void Scene::addPrimitive(Primitive *p) {
+    primitives.push_back(p);
 }
 
-std::vector<Sphere*> Scene::getSpheres() {
-    return spheres;
+std::vector<Primitive *> Scene::getPrimitives() {
+    return primitives;
 }
 
 void Scene::addLight(Light l) {

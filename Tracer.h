@@ -12,7 +12,7 @@ public:
     Vector* render(Screen screen, Scene scene, Shader shader);
 
 private:
-    Vector trace(Scene scene, Ray ray, Shader shader);
+    Vector trace(Scene scene, Ray ray, Shader shader, int depth);
 
 };
 
