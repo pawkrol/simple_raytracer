@@ -55,18 +55,28 @@ Vector Tracer::trace(Scene scene, Ray ray, Shader shader, int depth) {
         }
     }
 
-    if (sphereIndex == -1) return Vector(0, 0, 0);
+    if (sphereIndex == -1) return Vector();
 
     Vector hitPosition = ray.getP() + ray.getD() * tNearest;
     Vector hitNormal = primitives[sphereIndex]->getNormal(hitPosition);
     hitNormal.normalize();
 
-    Vector toLight = Vector::normalize(scene.getLight().getPosition() - hitPosition);
-    Ray shadowRay = Ray(hitPosition, toLight);
+    if (depth == 0) {
+        Light light = scene.getLight();
+        Vector toLight = Vector::normalize(light.getPosition() - hitPosition);
+        Ray shadowRay = Ray(hitPosition, toLight);
 
-    for (int i = 0; i < scene.getPrimitives().size(); i++) {
-        if (i != sphereIndex && scene.getPrimitives()[i]->intersects(shadowRay, t1, t2)) {
-            return shader.shade(hitPosition, hitNormal, scene, sphereIndex) * 0.2;
+        double distanceToLight = Vector::distance(hitPosition, light.getPosition());
+
+        for (int i = 0; i < scene.getPrimitives().size(); i++) {
+            if (i != sphereIndex && scene.getPrimitives()[i]->intersects(shadowRay, t1, t2)) {
+                Vector primitiveHitPosition = shadowRay.getP() + shadowRay.getD() * t1;
+                double distanceToPrimitive = Vector::distance(hitPosition, primitiveHitPosition);
+
+                if (distanceToPrimitive < distanceToLight) {
+                    return shader.shade(hitPosition, hitNormal, scene, sphereIndex) * 0.2;
+                }
+            }
         }
     }
 

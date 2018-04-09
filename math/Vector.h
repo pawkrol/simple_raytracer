@@ -33,6 +33,7 @@ public:
 
     static Vector normalize(Vector v);
     static Vector reflect(Vector i, Vector n);
+    static double distance(Vector a, Vector b);
 };
 
 #endif //RIVAL_DEALER_VECTOR_H

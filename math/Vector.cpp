@@ -100,3 +100,11 @@ Vector Vector::normalize(Vector v) {
 Vector Vector::reflect(Vector i, Vector n) {
     return i - (n * 2.0 * i.dot(n));
 }
+
+double Vector::distance(Vector a, Vector b) {
+    return sqrt(
+              (a.x - b.x) * (a.x - b.x)
+            + (a.y - b.y) * (a.y - b.y)
+            + (a.z - b.z) * (a.z - b.z)
+    );
+}

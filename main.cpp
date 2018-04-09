@@ -16,11 +16,11 @@
 int main() {
     unsigned width = 640;
     unsigned height = 480;
-    double fov = 70;
+    double fov = 80;
 
     Screen screen(width, height, fov);
 
-    Light light(Vector(-1, 1.9, -0.5), Vector(1));
+    Light light(Vector(-0.5, -0.3, 0), Vector(1));
 
     Scene scene;
     scene.setCameraPosition(Vector(0, 0, 0));
@@ -28,7 +28,7 @@ int main() {
     scene.addPrimitive(new Sphere(Vector(-0.21, -0.2, -1.2), 0.2, Vector(0.9, 0, 0)));
     scene.addPrimitive(new Sphere(Vector(0.21, -0.2, -1.2), 0.2, Vector(0.2, 0.5, 0.9)));
     scene.addPrimitive(new Sphere(Vector(0, 0.2, -1.2), 0.2, Vector(0.55, 0.9, 0)));
-    scene.addPrimitive(new Plane(Vector(0, -0.39, 0), Vector(0, 1, 0), Vector(0.2)));
+    scene.addPrimitive(new Plane(Vector(0, -0.4, 0), Vector(0, 1, 0), Vector(0.2)));
 
     std::cout << "Scene ready, starting rendering..." << std::endl;
 
