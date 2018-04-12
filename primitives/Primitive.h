@@ -9,6 +9,9 @@ public:
     virtual bool intersects(Ray r, double &t1, double &t2) = 0;
     virtual Vector getNormal(Vector position) = 0;
     virtual Vector getColor() = 0;
+    virtual bool isTransparent() {
+        return false;
+    }
 
 };
 

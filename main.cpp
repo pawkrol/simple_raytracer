@@ -20,15 +20,15 @@ int main() {
 
     Screen screen(width, height, fov);
 
-    Light light(Vector(-0.5, -0.3, 0), Vector(1));
+    Light light(Vector(0, 0.3, 0), Vector(1));
 
     Scene scene;
     scene.setCameraPosition(Vector(0, 0, 0));
     scene.addLight(light);
-    scene.addPrimitive(new Sphere(Vector(-0.21, -0.2, -1.2), 0.2, Vector(0.9, 0, 0)));
-    scene.addPrimitive(new Sphere(Vector(0.21, -0.2, -1.2), 0.2, Vector(0.2, 0.5, 0.9)));
-    scene.addPrimitive(new Sphere(Vector(0, 0.2, -1.2), 0.2, Vector(0.55, 0.9, 0)));
-    scene.addPrimitive(new Plane(Vector(0, -0.4, 0), Vector(0, 1, 0), Vector(0.2)));
+    scene.addPrimitive(new Sphere(Vector(-0.1, 0., -0.4), 0.1, Vector(0, 0, 0)));
+    scene.addPrimitive(new Sphere(Vector(0.0, 0.15, -1.2), 0.3, Vector(0.2, 0.5, 0.9)));
+    scene.addPrimitive(new Sphere(Vector(0.4, 0.1, -1), 0.1, Vector(0)));
+    scene.addPrimitive(new Plane(Vector(0, -0.23, 0), Vector(0, 1, 0), Vector(1)));
 
     std::cout << "Scene ready, starting rendering..." << std::endl;
 

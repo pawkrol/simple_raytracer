@@ -4,6 +4,7 @@
 #include "Tracer.h"
 #include "physics/Ray.h"
 #include "primitives/Sphere.h"
+#include "math/Util.h"
 
 const double PI = 3.1415926;
 const double BIAS = 1e-12;
@@ -38,7 +39,7 @@ Vector *Tracer::render(Screen screen, Scene scene, Shader shader) {
 }
 
 Vector Tracer::trace(Scene scene, Ray ray, Shader shader, int depth) {
-    int sphereIndex = -1;
+    int primitiveIndex = -1;
 
     double tNearest = INFINITY;
     double t1 = 0;
@@ -50,15 +51,15 @@ Vector Tracer::trace(Scene scene, Ray ray, Shader shader, int depth) {
         if (primitives[i]->intersects(ray, t1, t2)) {
             if (t1 < tNearest) {
                 tNearest = t1;
-                sphereIndex = i;
+                primitiveIndex = i;
             }
         }
     }
 
-    if (sphereIndex == -1) return Vector();
+    if (primitiveIndex == -1) return Vector();
 
     Vector hitPosition = ray.getP() + ray.getD() * tNearest;
-    Vector hitNormal = primitives[sphereIndex]->getNormal(hitPosition);
+    Vector hitNormal = primitives[primitiveIndex]->getNormal(hitPosition);
     hitNormal.normalize();
 
     if (depth == 0) {
@@ -69,12 +70,13 @@ Vector Tracer::trace(Scene scene, Ray ray, Shader shader, int depth) {
         double distanceToLight = Vector::distance(hitPosition, light.getPosition());
 
         for (int i = 0; i < scene.getPrimitives().size(); i++) {
-            if (i != sphereIndex && scene.getPrimitives()[i]->intersects(shadowRay, t1, t2)) {
+            Primitive* p = scene.getPrimitives()[i];
+            if (i != primitiveIndex && !p->isTransparent() && p->intersects(shadowRay, t1, t2)) {
                 Vector primitiveHitPosition = shadowRay.getP() + shadowRay.getD() * t1;
                 double distanceToPrimitive = Vector::distance(hitPosition, primitiveHitPosition);
 
                 if (distanceToPrimitive < distanceToLight) {
-                    return shader.shade(hitPosition, hitNormal, scene, sphereIndex) * 0.2;
+                    return shader.shade(hitPosition, hitNormal, scene, primitiveIndex) * 0.2;
                 }
             }
         }
@@ -83,11 +85,62 @@ Vector Tracer::trace(Scene scene, Ray ray, Shader shader, int depth) {
     Vector calculatedColor;
 
     if (depth < MAX_DEPTH) {
+        double kt = 0;
+        double kr = 0;
+
+        double rayDirDotNormal = ray.getD().dot(hitNormal);
+        double cosi = Util::clamp(-1.0, 1.0, rayDirDotNormal);
+        double etai = 1;
+        double etat = 1.47;
+
+        Vector n = hitNormal;
+
+        if (cosi < 0) {
+            cosi = -cosi;
+        } else {
+            double e = etat;
+            etat = etai;
+            etai = e;
+
+            n = -hitNormal;
+        }
+
+        double eta = etai / etat;
+        double u = 1.0 - cosi * cosi;
+        double k = 1.0 - eta * eta * u;
+
+        double sint = eta * sqrt(Util::max(0.0, u));
+
+        if (sint >= 1) {
+            kr = 1;
+        } else {
+            double cost = sqrt(Util::max(0.0, 1 - sint * sint));
+            double cosiAbs = Util::abs(cosi);
+            double Rs = ( (etat * cosiAbs) - (etai * cost) ) / ( (etat * cosiAbs) + (etai * cost) );
+            double Rp = ( (etai * cosiAbs) - (etat * cost) ) / ( (etai * cosiAbs) + (etat * cost) );
+            kr = (Rs * Rs + Rp * Rp) / 2;
+        }
+
+        kt = 1 - kr;
+
+        //refraction
+        if (primitives[primitiveIndex]->isTransparent()) {
+            bool outside = rayDirDotNormal < 0;
+
+            Vector refractedOrigin = outside ? hitPosition - hitNormal * BIAS : hitPosition + hitNormal * BIAS;
+            Vector refractedDir = k < 0 ? Vector(0) : ray.getD() * eta + n * (eta * cosi - sqrt(k));
+            refractedDir.normalize();
+
+            Ray refractedRay(refractedOrigin, refractedDir);
+            calculatedColor += trace(scene, refractedRay, shader, depth + 1) * kt;
+        }
+
+        //reflection
         Vector reflectedDir = Vector::normalize(Vector::reflect(ray.getD(), hitNormal));
 
         Ray reflectRay(hitPosition + (hitNormal * BIAS), reflectedDir);
-        calculatedColor = trace(scene, reflectRay, shader, depth + 1) * 0.3;
+        calculatedColor += trace(scene, reflectRay, shader, depth + 1) * kr;
     }
 
-    return calculatedColor + shader.shade(hitPosition, hitNormal, scene, sphereIndex);
+    return calculatedColor + shader.shade(hitPosition, hitNormal, scene, primitiveIndex);
 }

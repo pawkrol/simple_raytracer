@@ -76,3 +76,7 @@ Vector Sphere::getCenter() {
 Vector Sphere::getColor() {
     return color;
 }
+
+bool Sphere::isTransparent() {
+    return true;
+}

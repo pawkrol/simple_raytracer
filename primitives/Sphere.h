@@ -15,6 +15,7 @@ public:
 
     Vector getCenter();
     Vector getColor() override;
+    bool isTransparent() override;
 
 private:
     Vector c;
